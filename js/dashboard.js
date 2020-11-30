@@ -1,0 +1,65 @@
+   $("document").ready(function()
+   {
+        // Load google charts
+        google.charts.load('current', {'packages':['corechart']});
+        
+        google.charts.setOnLoadCallback(drawChart);
+
+        finalarray= "";
+
+        agegroupanalytics();
+        
+        var snippet = "";
+        snippet+=`<option value="agegroup">Age Group</option>`;
+        snippet+=`<option value="bookingsource">Booking Source</option>`;
+        $("#category").html(snippet);
+        
+        $("#category").change(function()
+        {
+            var selected=$("#category").val();
+            if(selected=="agegroup")
+                agegroupanalytics();  
+            else if(selected=="bookingsource")
+                bookingsourceanalytics(); 
+        });
+
+            function agegroupanalytics()
+            {
+                    //get the data from php 
+                    $.get("../php/getdata.php?type=1",function(data,status){
+                        agedata = JSON.parse(data);
+                        myArray = Object.entries(agedata.content);
+                        finalarray= [['Task', 'Age group']].concat(myArray);
+                        drawChart("Age Group Analytics");
+                        $("#analyticstitle").html("Age Group Analytics");
+                    });
+            }
+
+            function bookingsourceanalytics()
+            {
+                $.get("../php/getdata.php?type=2",function(data,status){
+                  
+                    bookingsourcedata = JSON.parse(data);
+                    myArray = Object.entries(bookingsourcedata.content);
+                    finalarray= [['Task', 'Booking Source']].concat(myArray);
+                    drawChart("Booking Source Analytics");
+                    $("#analyticstitle").html("Booking Source Analytics");
+                });
+            }
+
+            function drawChart(title) 
+            {
+             
+                var data = google.visualization.arrayToDataTable(finalarray);
+
+                // Optional; add a title and set the width and height of the chart
+                var options = {'title':title, 'width':1000, 'height':700};
+
+                // Display the chart inside the <div> element with id="piechart"
+                var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+                
+                chart.draw(data, options);
+            }
+
+   });
+   
