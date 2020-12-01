@@ -12,6 +12,8 @@
         var snippet = "";
         snippet+=`<option value="agegroup">Age Group</option>`;
         snippet+=`<option value="bookingsource">Booking Source</option>`;
+        snippet+=`<option value="gender">Gender Analytics</option>`;
+        
         $("#category").html(snippet);
         
         $("#category").change(function()
@@ -20,7 +22,9 @@
             if(selected=="agegroup")
                 agegroupanalytics();  
             else if(selected=="bookingsource")
-                bookingsourceanalytics(); 
+                bookingsourceanalytics();
+            else if(selected=="gender")
+                genderanalytics();  
         });
 
             function agegroupanalytics()
@@ -44,6 +48,17 @@
                     finalarray= [['Task', 'Booking Source']].concat(myArray);
                     drawChart("Booking Source Analytics");
                     $("#analyticstitle").html("Booking Source Analytics");
+                });
+            }
+            function genderanalytics()
+            {
+                $.get("../php/getdata.php?type=3",function(data,status){
+                  
+                    bookingsourcedata = JSON.parse(data);
+                    myArray = Object.entries(bookingsourcedata.content);
+                    finalarray= [['Task', 'Gender']].concat(myArray);
+                    drawChart("Gender Analytics");
+                    $("#analyticstitle").html("Gender Analytics");
                 });
             }
 
